@@ -36,6 +36,7 @@ int decode_bencode_int(const char *bencoded_value) {
     next_char = bencoded_value[i + 1];
   }
   decoded_str[i] = '\0';
+  fprintf(stderr, "THE DECODED STR IS: %s\n", decoded_str);
   int decoded_int = atoi(decoded_str);
   fprintf(stderr, "THE DECODED INT IS: %d\n", decoded_int);
   free(decoded_str);
