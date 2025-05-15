@@ -19,6 +19,19 @@ char *decode_bencode(const char *bencoded_value) {
       fprintf(stderr, "Invalid encoded value: %s\n", bencoded_value);
       exit(1);
     }
+  } else if (bencoded_value[0] == 'i') {
+    char next_char;
+    char *decoded_str = (char *)malloc(strlen(bencoded_value) - 2);
+    if (bencoded_value[strlen(bencoded_value) - 1] != 'e') {
+      fprintf(stderr, "Invalid encoded integer format: %s\n", bencoded_value);
+      exit(1);
+    }
+    int i = 0;
+    while (next_char != 'e') {
+      decoded_str[i] = bencoded_value[i + 1];
+      i++;
+    }
+    return decoded_str;
   } else {
     fprintf(stderr, "Only strings are supported at the moment\n");
     exit(1);
