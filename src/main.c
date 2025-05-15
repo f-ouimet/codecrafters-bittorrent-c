@@ -5,41 +5,41 @@
 
 bool is_digit(char c) { return c >= '0' && c <= '9'; }
 
-char *decode_bencode(const char *bencoded_value) {
-  if (is_digit(bencoded_value[0])) {
-    int length = atoi(bencoded_value);
-    const char *colon_index = strchr(bencoded_value, ':');
-    if (colon_index != NULL) {
-      const char *start = colon_index + 1;
-      char *decoded_str = (char *)malloc(length + 1);
-      strncpy(decoded_str, start, length);
-      decoded_str[length] = '\0';
-      return decoded_str;
-    } else {
-      fprintf(stderr, "Invalid encoded value: %s\n", bencoded_value);
-      exit(1);
-    }
-  } else if (bencoded_value[0] == 'i') {
-    char next_char = bencoded_value[0];
-    char *decoded_str = (char *)malloc(strlen(bencoded_value));
-    /*if (bencoded_value[strlen(bencoded_value) - 1] != 'e') {
-      fprintf(stderr, "Invalid encoded integer format: %s\n", bencoded_value);
-      exit(1);
-    }*/
-    int i = 0;
-    size_t len = strlen(bencoded_value);
-    while ((i + 1) < len && (next_char != 'e')) {
-      decoded_str[i] = bencoded_value[i + 1];
-      i++;
-      next_char = bencoded_value[i + 1];
-    }
-    decoded_str[i] = '\0';
-    int decoded_int = atoi(decoded_str);
+char *decode_bencode_string(const char *bencoded_value) {
+
+  int length = atoi(bencoded_value);
+  const char *colon_index = strchr(bencoded_value, ':');
+  if (colon_index != NULL) {
+    const char *start = colon_index + 1;
+    char *decoded_str = (char *)malloc(length + 1);
+    strncpy(decoded_str, start, length);
+    decoded_str[length] = '\0';
     return decoded_str;
   } else {
-    fprintf(stderr, "Only strings are supported at the moment\n");
+    fprintf(stderr, "Invalid encoded value: %s\n", bencoded_value);
     exit(1);
   }
+}
+
+int *decode_bencode_int(const char *bencoded_value) {
+  char next_char = bencoded_value[0];
+  char *decoded_str = (char *)malloc(strlen(bencoded_value));
+  /*if (bencoded_value[strlen(bencoded_value) - 1] != 'e') {
+    fprintf(stderr, "Invalid encoded integer format: %s\n", bencoded_value);
+    exit(1);
+  }*/
+  int i = 0;
+  size_t len = strlen(bencoded_value);
+  while ((i + 1) < len && (next_char != 'e')) {
+    decoded_str[i] = bencoded_value[i + 1];
+    i++;
+    next_char = bencoded_value[i + 1];
+  }
+  decoded_str[i] = '\0';
+  int *decoded_int = malloc(sizeof(int));
+  decoded_int[0] = atoi(decoded_str);
+  free(decoded_str);
+  return decoded_int;
 }
 
 int main(int argc, char *argv[]) {
@@ -55,15 +55,24 @@ int main(int argc, char *argv[]) {
   const char *command = argv[1];
 
   if (strcmp(command, "decode") == 0) {
-    // You can use print statements as follows for debugging, they'll be visible
-    // when running tests.
+    // You can use print statements as follows for debugging, they'll be
+    // visible when running tests.
     fprintf(stderr, "Logs from your program will appear here!\n");
 
     // Uncomment this block to pass the first stage
     const char *encoded_str = argv[2];
-    char *decoded_str = decode_bencode(encoded_str);
-    printf("\"%s\"\n", decoded_str);
-    free(decoded_str);
+    if (is_digit(encoded_str[0])) {
+      char *decoded_str = decode_bencode_string(encoded_str);
+      printf("\"%s\"\n", decoded_str);
+      free(decoded_str);
+    } else if (encoded_str[0] == 'i') {
+      int *decoded_int = decode_bencode_int(encoded_str);
+      printf("%d\n", decoded_int[0]);
+      free(decoded_int);
+    } else {
+      fprintf(stderr, "Invalid format (not string or int)\n");
+      exit(1);
+    }
   } else {
     fprintf(stderr, "Unknown command: %s\n", command);
     return 1;
