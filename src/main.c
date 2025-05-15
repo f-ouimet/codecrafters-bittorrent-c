@@ -1,3 +1,4 @@
+#include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,7 +22,7 @@ char *decode_bencode_string(const char *bencoded_value) {
   }
 }
 
-int decode_bencode_int(const char *bencoded_value) {
+long long decode_bencode_int(const char *bencoded_value) {
   char next_char = bencoded_value[0];
   char *decoded_str = (char *)malloc(strlen(bencoded_value));
   /*if (bencoded_value[strlen(bencoded_value) - 1] != 'e') {
@@ -37,8 +38,16 @@ int decode_bencode_int(const char *bencoded_value) {
   }
   decoded_str[i] = '\0';
   fprintf(stderr, "THE DECODED STR IS: %s\n", decoded_str);
-  int decoded_int = atoi(decoded_str);
-  fprintf(stderr, "THE DECODED INT IS: %d\n", decoded_int);
+  char *endptr;
+  errno = 0;
+
+  long long decoded_int = strtoll(decoded_str, &endptr, 10);
+  if (errno != 0 || *endptr != '\0') {
+    fprintf(stderr, "Invalid number: %s\n", decoded_str);
+    free(decoded_str);
+    exit(1);
+  }
+  fprintf(stderr, "THE DECODED INT IS: %lld\n", decoded_int);
   free(decoded_str);
   return decoded_int;
 }
@@ -67,8 +76,8 @@ int main(int argc, char *argv[]) {
       printf("\"%s\"\n", decoded_str);
       free(decoded_str);
     } else if (encoded_str[0] == 'i') {
-      int decoded_int = decode_bencode_int(encoded_str);
-      printf("%d\n", decoded_int);
+      long long decoded_int = decode_bencode_int(encoded_str);
+      printf("%lld\n", decoded_int);
     } else {
       fprintf(stderr, "Invalid format (not string or int)\n");
       exit(1);
