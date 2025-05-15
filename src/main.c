@@ -21,7 +21,7 @@ char *decode_bencode_string(const char *bencoded_value) {
   }
 }
 
-int *decode_bencode_int(const char *bencoded_value) {
+int decode_bencode_int(const char *bencoded_value) {
   char next_char = bencoded_value[0];
   char *decoded_str = (char *)malloc(strlen(bencoded_value));
   /*if (bencoded_value[strlen(bencoded_value) - 1] != 'e') {
@@ -36,8 +36,7 @@ int *decode_bencode_int(const char *bencoded_value) {
     next_char = bencoded_value[i + 1];
   }
   decoded_str[i] = '\0';
-  int *decoded_int = malloc(sizeof(int));
-  decoded_int[0] = atoi(decoded_str);
+  int decoded_int = atoi(decoded_str);
   free(decoded_str);
   return decoded_int;
 }
@@ -66,9 +65,8 @@ int main(int argc, char *argv[]) {
       printf("\"%s\"\n", decoded_str);
       free(decoded_str);
     } else if (encoded_str[0] == 'i') {
-      int *decoded_int = decode_bencode_int(encoded_str);
-      printf("%d\n", decoded_int[0]);
-      free(decoded_int);
+      int decoded_int = decode_bencode_int(encoded_str);
+      printf("%d\n", decoded_int);
     } else {
       fprintf(stderr, "Invalid format (not string or int)\n");
       exit(1);
