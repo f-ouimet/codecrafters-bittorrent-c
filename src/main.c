@@ -20,7 +20,6 @@ char *decode_bencode(const char *bencoded_value) {
       exit(1);
     }
   } else if (bencoded_value[0] == 'i') {
-    printf("initial value %s \n", bencoded_value);
     char next_char = bencoded_value[0];
     char *decoded_str = (char *)malloc(strlen(bencoded_value));
     /*if (bencoded_value[strlen(bencoded_value) - 1] != 'e') {
@@ -33,7 +32,6 @@ char *decode_bencode(const char *bencoded_value) {
       decoded_str[i] = bencoded_value[i + 1];
       i++;
       next_char = bencoded_value[i + 1];
-      printf("%c\n", next_char);
     }
     decoded_str[i] = '\0';
     int decoded_int = atoi(decoded_str);
