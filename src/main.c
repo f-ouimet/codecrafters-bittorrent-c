@@ -20,17 +20,23 @@ char *decode_bencode(const char *bencoded_value) {
       exit(1);
     }
   } else if (bencoded_value[0] == 'i') {
-    char next_char;
-    char *decoded_str = (char *)malloc(strlen(bencoded_value) - 2);
-    if (bencoded_value[strlen(bencoded_value) - 1] != 'e') {
+    printf("initial value %s \n", bencoded_value);
+    char next_char = bencoded_value[0];
+    char *decoded_str = (char *)malloc(strlen(bencoded_value));
+    /*if (bencoded_value[strlen(bencoded_value) - 1] != 'e') {
       fprintf(stderr, "Invalid encoded integer format: %s\n", bencoded_value);
       exit(1);
-    }
+    }*/
     int i = 0;
-    while (next_char != 'e') {
+    size_t len = strlen(bencoded_value);
+    while ((i + 1) < len && (next_char != 'e')) {
       decoded_str[i] = bencoded_value[i + 1];
       i++;
+      next_char = bencoded_value[i + 1];
+      printf("%c\n", next_char);
     }
+    decoded_str[i] = '\0';
+    int decoded_int = atoi(decoded_str);
     return decoded_str;
   } else {
     fprintf(stderr, "Only strings are supported at the moment\n");
