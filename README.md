@@ -12,9 +12,11 @@ A BitTorrent client written in C for education purposes. (WIP)
 
 ## Codecrafters
 
+The build system was made with the codecrafters original project template.
+
 The general idea of this project and some parts of bencode decoding were made with the [codecrafters challenges](https://app.codecrafters.io/courses/bittorrent/stages/ah1).
 Due to the codecrafters tests being paid access only after integer decoding, I've chosen to take my own path for this project and vaguely follow the ideas of the challenges. 
-The master branch contains the codecrafters project.
+The master branch contains the codecrafters project steps until migration.
 
 ## BitTorrent
 
