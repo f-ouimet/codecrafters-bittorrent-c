@@ -1,2 +1,3 @@
-# codecrafters-bittorrent-c
-A bittorrent client made with the codecrafters challenges
+# simple-c-bittorrent
+
+A BitTorrent client written in C for education purposes.
